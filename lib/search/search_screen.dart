@@ -91,7 +91,7 @@ class SearchScreenState extends State<SearchScreen> {
 
       if (response.statusCode == 200) {
         setState(() {
-          places = placeModelFromJson(response.body);
+          places = placeResponseFromJson(response.body).data;
           // places.sort((a, b) => a.placeName.compareTo(b.placeName));
           filteredPlaces = places;
 

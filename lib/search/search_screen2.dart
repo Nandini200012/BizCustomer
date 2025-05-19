@@ -48,7 +48,8 @@ class _SearchScreen2State extends State<SearchScreen2> {
 
       if (response.statusCode == 200) {
         setState(() {
-          places = placeModelFromJson(response.body);
+          places = placeResponseFromJson(response.body).data;
+          // placeModelFromJson(response.body);
           filteredPlaces = places;
         });
       } else {

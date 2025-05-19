@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,6 +60,7 @@ class SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> deviceIDCheckUp() async {
+    log('customerID: ${SharedPrefrence().getCustomerId()}');
     final response = await http.get(
       Uri.parse(Urls.getAppConfig),
       headers: {

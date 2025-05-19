@@ -48,7 +48,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
 
       if (response.statusCode == 200) {
         setState(() {
-          places = placeModelFromJson(response.body);
+          places = placeResponseFromJson(response.body).data;
           filteredPlaces = places;
           print("PLaces:>>>|||>>:$filteredPlaces");
         });

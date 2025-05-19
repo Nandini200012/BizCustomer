@@ -17,14 +17,15 @@ class Urls {
   static const resetPassword = "${baseUrl}2878/resetPassword";
   static const getProfileData = "${baseUrl}2878/getProfileData";
   static const updateProfileData = "${baseUrl}2878/updateProfile";
-  static const getPlaceData = "${baseUrl}8363/getPlacesAndTown";
+  static const getPlaceData = "${baseUrl}8363/getValidPlacesTowns";
+  // getPlacesAndTown";
   static const getApprovedVendorsByPlace =
       "${baseUrl}8363/getApprovedVendorsbyPlaces";
   static const postEncashmentRequest = "${baseUrl}7392/postEncashmentRequest";
 
   // static const postEncashmentRequest= "https://sacrosys.net:6662/api/7392/postEncashmentRequest";
-  static const getTransactions =
-      "${baseUrl}7392/getLast10CustomerTransactionsByCardNumber";
+  static const getTransactions = "${baseUrl}2878/getCustomerTransactionHistory";
+  // getLast10CustomerTransactionsByCardNumber";
   static const getFilteredApprovedVendors =
       "${baseUrl}8363/getFilteredApprovedVendorsForFlutter";
   static const getFilteredApprovedSearchByPlaceId =

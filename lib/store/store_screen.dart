@@ -749,8 +749,8 @@ class StoreScreenState extends State<StoreScreen>
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(Constants().appColor),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.transparent),
+                  // AlwaysStoppedAnimation<Color>(Constants().appColor),
                 ),
               ),
             );
@@ -847,6 +847,8 @@ class StoreScreenState extends State<StoreScreen>
                         child: const Center(
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.transparent),
                           ),
                         ),
                       ),
