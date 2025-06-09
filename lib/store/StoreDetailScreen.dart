@@ -494,9 +494,36 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
   }
 }
 
-Future<void> makePhoneCall(context, phoneNumber, platform) async {
+Future<void> makePhoneCall(
+    BuildContext context, String phoneNumber, dynamic platform) async {
   if (phoneNumber.isEmpty) return;
 
+  // Show confirmation dialog before making the call
+  final bool? shouldCall = await showDialog<bool>(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(
+        'Confirm Call',
+        style: TextStyle(
+            color: Colors.black, fontWeight: FontWeight.w500, fontSize: 18),
+      ),
+      content: Text('Do you want to call $phoneNumber ?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text('No'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text('Yes'),
+        ),
+      ],
+    ),
+  );
+
+  if (shouldCall != true) return;
+
+  // Proceed with call based on platform
   if (Platform.isAndroid) {
     try {
       await platform.invokeMethod('makeCall', {'number': phoneNumber});
@@ -517,6 +544,7 @@ Future<void> makePhoneCall(context, phoneNumber, platform) async {
     }
   }
 }
+
 //   final status = await Permission.phone.status;
 //   if (status.isDenied || status.isPermanentlyDenied) {
 //     final result = await Permission.phone.request();

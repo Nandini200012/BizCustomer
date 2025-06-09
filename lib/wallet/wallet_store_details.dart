@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:reward_hub_customer/Utils/SharedPrefrence.dart';
 import 'package:reward_hub_customer/Utils/constants.dart';
 import 'package:reward_hub_customer/Utils/phone_dialer.dart';
+import 'package:reward_hub_customer/profile/profile_screen.dart';
 import 'package:reward_hub_customer/provider/user_data_provider.dart';
 import 'package:reward_hub_customer/wallet/wallet_store_model.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -147,7 +148,12 @@ class _WalletStoreDetailsState extends State<WalletStoreDetails> {
           ),
           Padding(
             padding: EdgeInsets.only(right: 10),
-            child: profileImage(),
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ProfileScreen()));
+                },
+                child: profileImage()),
           ),
         ],
       ),
@@ -435,9 +441,36 @@ class _WalletStoreDetailsState extends State<WalletStoreDetails> {
     );
   }
 
-  Future<void> makePhoneCall(context, phoneNumber, platform) async {
+  Future<void> makePhoneCall(
+      BuildContext context, String phoneNumber, dynamic platform) async {
     if (phoneNumber.isEmpty) return;
 
+    // Show confirmation dialog before making the call
+    final bool? shouldCall = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Confirm Call',
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.w500, fontSize: 18),
+        ),
+        content: Text('Do you want to call $phoneNumber ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldCall != true) return;
+
+    // Proceed with call based on platform
     if (Platform.isAndroid) {
       try {
         await platform.invokeMethod('makeCall', {'number': phoneNumber});
@@ -458,6 +491,7 @@ class _WalletStoreDetailsState extends State<WalletStoreDetails> {
       }
     }
   }
+
   // Future<void> makePhoneCall(BuildContext context, String phoneNumber) async {
   //   await PhoneDialer.makeCall(context, phoneNumber);
   // }

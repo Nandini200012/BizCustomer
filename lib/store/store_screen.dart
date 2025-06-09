@@ -335,7 +335,7 @@ class StoreScreenState extends State<StoreScreen>
         // Access and parse the stores list from the 'data' map
         if (data.containsKey('data') && data['data'] is List) {
           List<StoreModel> stores = parseStores(data['data']);
-
+          log("Stores:>>>|||>>:$stores");
           if (mounted) {
             setState(() {
               // Clear the existing stores and repopulate them
@@ -852,14 +852,17 @@ class StoreScreenState extends State<StoreScreen>
                           ),
                         ),
                       ),
-                      errorWidget: (context, url, error) => Image.asset(
-                        defaultImage,
-                        fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Icon(
+                        Icons.image_not_supported_rounded,
+                        size: 35,
+                        color: Colors.grey[400],
+                        // fit: BoxFit.cover,s
                       ),
                     )
-                  : Image.asset(
-                      defaultImage,
-                      fit: BoxFit.cover,
+                  : Icon(
+                      Icons.image_not_supported_rounded,
+                      size: 35,
+                      color: Colors.grey[400],
                     ),
 
               // Gradient overlay for text visibility
@@ -1092,7 +1095,7 @@ class StoreScreenState extends State<StoreScreen>
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        print("Response:>>> ${response.body}");
+        log("Response:----------->>> ${response.body}");
 
         if (data['isSuccess'] == true) {
           List<StoreModel> stores = parseStores(data['data']);

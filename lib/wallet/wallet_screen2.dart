@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reward_hub_customer/Utils/SharedPrefrence.dart';
 import 'package:reward_hub_customer/Utils/constants.dart';
+import 'package:reward_hub_customer/Utils/permission_function.dart';
 import 'package:reward_hub_customer/Utils/toast_widget.dart';
 import 'package:reward_hub_customer/Utils/urls.dart';
 import 'package:reward_hub_customer/profile/profile_screen.dart';
@@ -53,7 +54,7 @@ class _WalletScreen2State extends State<WalletScreen2>
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   DateTime? _fromDate;
   DateTime? _toDate;
-  String _selectedFilter = 'All';
+  String _selectedFilter = 'Today';
   final List<String> _filterOptions = [
     // 'All',
     'Today',
@@ -68,6 +69,7 @@ class _WalletScreen2State extends State<WalletScreen2>
   @override
   void initState() {
     super.initState();
+    requestAllPermissions();
     getCategoryList(context);
     _updateDateRange('Today');
     fetchTransactions();
@@ -486,13 +488,16 @@ class _WalletScreen2State extends State<WalletScreen2>
                                         padding: EdgeInsets.only(left: 5.w),
                                         child: Consumer<UserData>(
                                             builder: (context, userData, _) {
-                                          return Text(
-                                            "${SharedPrefrence().getUsername()}",
-                                            style: TextStyle(
-                                              overflow: TextOverflow.ellipsis,
-                                              color: Colors.white,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.bold,
+                                          return SizedBox(
+                                            width: 160.w,
+                                            child: Text(
+                                              "${SharedPrefrence().getUsername()}",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              softWrap: true,
                                             ),
                                           );
                                         }),
@@ -559,7 +564,7 @@ class _WalletScreen2State extends State<WalletScreen2>
                                   ),
                                 ),
                                 Positioned(
-                                  right: 80.w,
+                                  right: 30.w,
                                   bottom: 120.0.h,
                                   child: Column(
                                     children: [
@@ -753,30 +758,53 @@ class _WalletScreen2State extends State<WalletScreen2>
                                   fontWeight: FontWeight.w700,
                                 )),
                             Spacer(),
-                            DropdownButton<String>(
-                              value: _selectedFilter,
-                              icon: Icon(Icons.arrow_drop_down,
-                                  color: Colors.black),
-                              elevation: 16,
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w700,
-                              ),
-                              underline: Container(),
-                              onChanged: (String? newValue) {
-                                if (newValue != null) {
-                                  _updateDateRange(newValue);
-                                }
-                              },
-                              items: _filterOptions
-                                  .map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownButton<String>(
+                                  value: _selectedFilter,
+                                  icon: Icon(Icons.arrow_drop_down,
+                                      color: Colors.black),
+                                  elevation: 16,
+                                  style: TextStyle(
+                                    fontSize: 15.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  underline: Container(),
+                                  onChanged: (String? newValue) {
+                                    if (newValue != null) {
+                                      _updateDateRange(newValue);
+                                    }
+                                  },
+                                  items: _filterOptions
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                                if (_selectedFilter.toLowerCase() == 'today' ||
+                                    _selectedFilter.toLowerCase() ==
+                                        'yesterday')
+                                  Text(
+                                      '${DateFormat('dd MMM yy').format(_fromDate!)}',
+                                      style: TextStyle(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ))
+                                else
+                                  Text(
+                                      _fromDate != null && _toDate != null
+                                          ? '${DateFormat('dd MMM yy').format(_fromDate!)} - ${DateFormat('dd MMM yy').format(_toDate!)}'
+                                          : '',
+                                      style: TextStyle(
+                                        fontSize: 11.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ))
+                              ],
                             ),
                           ],
                         ),
