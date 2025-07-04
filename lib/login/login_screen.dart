@@ -51,6 +51,7 @@ class LoginScreenState extends State<LoginScreen> {
   dynamic? customerDeviceId;
   bool _isLoading = true;
   String? bizatomVersion;
+  bool isMobileVerified = false;
 
   bool? isActivated;
 
@@ -526,111 +527,128 @@ class LoginScreenState extends State<LoginScreen> {
         String verificationStatus = customerData[0].verificationStatus;
         if (mobileNumberFocused.hasFocus) {
           if (verificationStatus == "NEW ACTIVATION") {
+            setState(() {
+              isMobileVerified = false;
+            });
             showModalBottomSheet(
               context: context,
+              isDismissible: false,
+              enableDrag: false,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(25.0),
                 ),
               ),
               builder: (BuildContext context) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 16.h),
-                      Image.asset(
-                        "assets/images/ic_logo.png",
-                        height: 91.h,
-                        width: 201.w,
-                      ),
-                      SizedBox(height: 30.h),
-                      Text(
-                        "The phone number is not registered.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 16.h),
+                        Image.asset(
+                          "assets/images/ic_logo.png",
+                          height: 91.h,
+                          width: 201.w,
                         ),
-                      ),
-                      SizedBox(height: 18.h),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Do you want to proceed with new registration?",
+                        SizedBox(height: 30.h),
+                        Text(
+                          "The phone number is not registered.",
                           style: TextStyle(
-                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              minimumSize: Size(100.w, 50.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
-                              ),
+                        SizedBox(height: 18.h),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Do you want to proceed with new registration?",
+                            style: TextStyle(
+                              fontSize: 15.sp,
                             ),
-                            onPressed: () {
-                              Navigator.pop(context, true);
-                              SharedPrefrence().setActivated(true);
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.rightToLeft,
-                                  child: RegisterScreen(
-                                    mobileNumber: mobileNumberControlller.text,
-                                  ),
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                minimumSize: Size(100.w, 50.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.r),
                                 ),
-                              );
-                            },
-                            child: Text(
-                              "Register",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              minimumSize: Size(100.w, 50.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                                SharedPrefrence().setActivated(true);
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: RegisterScreen(
+                                      mobileNumber:
+                                          mobileNumberControlller.text,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Register",
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              mobileNumberControlller.clear();
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: Colors.white),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                minimumSize: Size(100.w, 50.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                mobileNumberControlller.clear();
+                              },
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                    ],
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
                   ),
                 );
               },
             );
           } else if (verificationStatus == "INVALID CARD") {
+            setState(() {
+              isMobileVerified = false;
+            });
             showTopSnackBar(context, "INVALID CARD");
-            // showCustomBottomSheet(context);
           } else if (verificationStatus == "ACTIVE CUSTOMER") {
+            setState(() {
+              isMobileVerified = true;
+            });
             SharedPrefrence().setPassword(customerData[0].customerSecret);
+            FocusScope.of(context).requestFocus(_passwordFocus);
           }
         }
       }
     } catch (e) {
       print('Error: $e');
+      setState(() {
+        isMobileVerified = false;
+      });
     } finally {
-      showTopSnackBar(context, "INVALID CARD");
-      // EasyLoading.dismiss();
+      EasyLoading.dismiss();
     }
   }
 
@@ -648,107 +666,126 @@ class LoginScreenState extends State<LoginScreen> {
         String verificationStatus = customerData[0].verificationStatus;
         if (mobileNumberFocused.hasFocus) {
           if (verificationStatus == "NEW ACTIVATION") {
+            setState(() {
+              isMobileVerified = false;
+            });
             showModalBottomSheet(
               context: context,
+              isDismissible: false,
+              enableDrag: false,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(25.0),
                 ),
               ),
               builder: (BuildContext context) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: 16.h),
-                      Image.asset(
-                        "assets/images/ic_logo.png",
-                        height: 91.h,
-                        width: 201.w,
-                      ),
-                      SizedBox(height: 30.h),
-                      Text(
-                        "The phone number is not registered.",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
+                return WillPopScope(
+                  onWillPop: () async => false,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(height: 16.h),
+                        Image.asset(
+                          "assets/images/ic_logo.png",
+                          height: 91.h,
+                          width: 201.w,
                         ),
-                      ),
-                      SizedBox(height: 18.h),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Do you want to proceed with new registration?",
+                        SizedBox(height: 30.h),
+                        Text(
+                          "The phone number is not registered.",
                           style: TextStyle(
-                            fontSize: 15.sp,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.sp,
                           ),
                         ),
-                      ),
-                      SizedBox(height: 20.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              minimumSize: Size(100.w, 50.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
-                              ),
+                        SizedBox(height: 18.h),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Do you want to proceed with new registration?",
+                            style: TextStyle(
+                              fontSize: 15.sp,
                             ),
-                            onPressed: () {
-                              Navigator.pop(context, true);
-                              SharedPrefrence().setActivated(true);
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.rightToLeft,
-                                  child: RegisterScreen(
-                                    mobileNumber: mobileNumberControlller.text,
-                                  ),
+                          ),
+                        ),
+                        SizedBox(height: 20.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                minimumSize: Size(100.w, 50.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.r),
                                 ),
-                              );
-                            },
-                            child: Text(
-                              "Register",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              minimumSize: Size(100.w, 50.h),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                                SharedPrefrence().setActivated(true);
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: RegisterScreen(
+                                      mobileNumber:
+                                          mobileNumberControlller.text,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                "Register",
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              mobileNumberControlller.clear();
-                            },
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: Colors.white),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                minimumSize: Size(100.w, 50.h),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.r),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                mobileNumberControlller.clear();
+                              },
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 20.h),
-                    ],
+                          ],
+                        ),
+                        SizedBox(height: 20.h),
+                      ],
+                    ),
                   ),
                 );
               },
             );
           } else if (verificationStatus == "INVALID CARD") {
+            setState(() {
+              isMobileVerified = false;
+            });
             showCustomBottomSheet(context);
           } else if (verificationStatus == "ACTIVE CUSTOMER") {
+            setState(() {
+              isMobileVerified = true;
+            });
             SharedPrefrence().setPassword(customerData[0].customerSecret);
+            FocusScope.of(context).requestFocus(_passwordFocus);
           }
         }
       }
     } catch (e) {
       print('Error: $e');
+      setState(() {
+        isMobileVerified = false;
+      });
     } finally {
       EasyLoading.dismiss();
     }
@@ -836,22 +873,22 @@ class LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.h),
-                      child: Text(
-                          textAlign: TextAlign.center,
-                          "Add your phone number. We’ll send you a\nverification code so we know you’re real",
-                          style: TextStyle(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w600,
-                              color: Constants().grayColor)),
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.only(top: 10.h),
+                    //   child: Text(
+                    //       textAlign: TextAlign.center,
+                    //       "Add your phone number. We'll send you a\nverification code so we know you're real",
+                    //       style: TextStyle(
+                    //           fontSize: 15.sp,
+                    //           fontWeight: FontWeight.w600,
+                    //           color: Constants().grayColor)),
+                    // ),
 
                     /*  const Padding(padding: EdgeInsets.only(top: 20,left: 15,right: 15),
                        child: Center(
                          child: Align(
                            alignment: Alignment.center,
-                           child: Text("Add your phone number. We’ll send you a verification code so we know you’re real",
+                           child: Text("Add your phone number. We'll send you a verification code so we know you're real",
                              style: TextStyle(fontWeight: FontWeight.bold,
                                  fontSize: 15,
                                  color: Color(0xFF828282)),
@@ -862,7 +899,7 @@ class LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 20, right: 20, bottom: 5, top: 20),
-                      child: SizedBox(
+                      child: Container(
                         width: double.infinity,
                         height: 50,
                         child: TextField(
@@ -870,6 +907,8 @@ class LoginScreenState extends State<LoginScreen> {
                             setState(() {
                               if (value.length == 10) {
                                 fetchDataAsync();
+                              } else {
+                                isMobileVerified = false;
                               }
                             });
                           },
@@ -883,7 +922,6 @@ class LoginScreenState extends State<LoginScreen> {
                           ],
                           keyboardType: TextInputType.number,
                           controller: mobileNumberControlller,
-                          // enabled: isActivated ?? false,
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                   borderSide:
@@ -904,7 +942,14 @@ class LoginScreenState extends State<LoginScreen> {
                                   EdgeInsets.only(left: 10, bottom: 5),
                               hintStyle: TextStyle(fontSize: 15),
                               hintText: "Mobile Number",
-                              fillColor: Color(0xFFE5E7E9)),
+                              fillColor: Color(0xFFE5E7E9),
+                              suffixIcon: isMobileVerified
+                                  ? Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 24,
+                                    )
+                                  : null),
                         ),
                       ),
                     ),
@@ -1159,7 +1204,7 @@ class LoginScreenState extends State<LoginScreen> {
            Padding(padding: EdgeInsets.only(top: 10),
            child: Align(
              alignment: Alignment.center,
-             child: Text("Don’t have BRAND Card?",
+             child: Text("Don't have BRAND Card?",
                style: TextStyle(
                    color: Constants().grayColor,
                    fontSize: 15,

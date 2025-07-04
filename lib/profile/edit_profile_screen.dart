@@ -145,7 +145,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             onTap: () {
                               Navigator.pop(context);
                             },
-                            child: Image.asset("assets/images/ic_back_img.png"),
+                            child: Icon(Icons.arrow_back_ios_new_rounded,
+                                color: Constants().appColor, size: 22),
                           ),
                         ),
                       ),
@@ -156,9 +157,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: Text(
                             "EDIT PROFILE",
                             style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF2C2C2C),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),
@@ -171,6 +173,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 flex: 0,
                 child: Container(
                   height: 200,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Constants().appColor.withOpacity(0.1),
+                        Colors.white
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
@@ -179,35 +191,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         onTap: () {
                           _showImagePicker(context);
                         },
-                        child:
-                            _imageFile == null
-                                ? Image.asset(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Constants().appColor.withOpacity(0.2),
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: _imageFile == null
+                              ? Image.asset(
                                   "assets/images/Frame_2.png",
                                   height: 98.h,
                                   width: 98.h,
                                   fit: BoxFit.cover,
                                 )
-                                : _imageFile!.existsSync()
-                                ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(49),
-                                  child: Image.file(
-                                    _imageFile!,
-                                    height: 98,
-                                    width: 98,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                                : Image.asset(
-                                  "assets/images/Frame_2.png",
-                                  height: 98.h,
-                                  width: 98.h,
-                                  fit: BoxFit.cover,
-                                ),
+                              : _imageFile!.existsSync()
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(49),
+                                      child: Image.file(
+                                        _imageFile!,
+                                        height: 98,
+                                        width: 98,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Image.asset(
+                                      "assets/images/Frame_2.png",
+                                      height: 98.h,
+                                      width: 98.h,
+                                      fit: BoxFit.cover,
+                                    ),
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
                           left: 8.0,
-                          top: 8,
+                          top: 16,
                           right: 8,
                         ),
                         child: Align(
@@ -217,7 +240,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 18,
                             ),
                           ),
                         ),
@@ -227,9 +250,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: Text(
                           SharedPrefrence().getUserPhone(),
                           style: const TextStyle(
-                            color: Colors.black,
+                            color: Colors.black54,
                             fontSize: 14,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -247,6 +270,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Color(0xFF2C2C2C),
                       ),
                     ),
                     SizedBox(
@@ -255,9 +279,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _fulNameController,
                         decoration: InputDecoration(
                           hintText: "Full Name",
-                          // enabledBorder: OutlineInputBorder(),
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Constants().appColor),
                           ),
                         ),
                       ),
@@ -268,6 +305,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Color(0xFF2C2C2C),
                       ),
                     ),
                     SizedBox(
@@ -276,8 +314,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           hintText: "Email",
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Constants().appColor),
                           ),
                         ),
                         keyboardType: TextInputType.emailAddress,
@@ -285,50 +337,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email address.';
                           }
-                          // Use a regular expression for basic email validation
-                          // You can use a more sophisticated validation based on your requirements
                           bool isValid = RegExp(
                             r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
                           ).hasMatch(value);
                           if (!isValid) {
                             return 'Please enter a valid email address.';
                           }
-                          return null; // Return null if the input is valid
+                          return null;
                         },
-
-                        // validator: (value) {
-                        //   if (value == null || value.isEmpty) {
-                        //     return 'Please enter an email address.';
-                        //   } else if (!value.isEmail) {
-                        //     return 'Please enter a valid email address.';
-                        //   }
-                        //   return null;
-                        // },
                       ),
                     ),
                     const SizedBox(height: 10),
-
-                    // Text("Phone Number",
-                    //     style: TextStyle(
-                    //       fontSize: 16,
-                    //       fontWeight: FontWeight.w500,
-                    //     )),
-                    // SizedBox(
-                    //   height: 52,
-                    //   child: TextFormField(
-                    //     controller: _phoneNumberController,
-                    //     decoration: InputDecoration(
-                    //         hintText: "Phone Number",
-                    //         border: OutlineInputBorder(
-                    //             borderRadius: BorderRadius.circular(10))),
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 10),
                     Text(
                       "Address 1",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Color(0xFF2C2C2C),
                       ),
                     ),
                     SizedBox(
@@ -337,8 +362,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _addres1Controller,
                         decoration: InputDecoration(
                           hintText: "Address1",
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Constants().appColor),
                           ),
                         ),
                       ),
@@ -349,6 +388,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Color(0xFF2C2C2C),
                       ),
                     ),
                     SizedBox(
@@ -357,8 +397,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _addres2Controller,
                         decoration: InputDecoration(
                           hintText: "Address2",
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Constants().appColor),
                           ),
                         ),
                       ),
@@ -369,6 +423,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
+                        color: Color(0xFF2C2C2C),
                       ),
                     ),
                     SizedBox(
@@ -377,20 +432,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         controller: _pinCodeController,
                         decoration: InputDecoration(
                           hintText: "Pin code",
+                          hintStyle: TextStyle(color: Colors.grey[400]),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Colors.grey[300]!),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(color: Constants().appColor),
                           ),
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                             RegExp(r'[0-9]'),
-                          ), // Only allow numeric characters
+                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     SizedBox(
                       height: 52,
                       width: double.infinity,
@@ -409,6 +477,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
+                            elevation: MaterialStateProperty.all(4),
+                            shadowColor: MaterialStateProperty.all(
+                              Constants().appColor.withOpacity(0.3),
+                            ),
                           ),
                           onPressed: () {
                             _updateProfile();
@@ -419,7 +491,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             "SAVE",
                             style: TextStyle(
                               fontSize: 16.sp,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
                             ),
                           ),
                         ),

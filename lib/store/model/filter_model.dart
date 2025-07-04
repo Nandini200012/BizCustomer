@@ -84,26 +84,39 @@ class Vendor {
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
-        vendorId: json["VendorId"],
-        vendorBusinessName: json["VendorBusinessName"],
-        vendorBusinessDescription: json["VendorBusinessDescription"],
-        vendorBranchName: json["VendorBranchName"],
-        landMark: json["LandMark"],
-        vendorRegdMobileDialCode: json["VendorRegdMobileDialCode"],
-        vendorRegisteredMobileNumber: json["VendorRegisteredMobileNumber"],
-        vendorContactPersonName: json["VendorContactPersonName"],
-        vContPrsnMobDialCode: json["VContPrsnMobDialCode"],
-        vendorContactPersonMobNumber: json["VendorContactPersonMobNumber"],
-        vendorClassificationId: json["VendorClassificationID"],
-        vendorClassificationName: json["VendorClassificationName"],
-        vendorCategories: json["VendorCategories"],
-        vendorAddressL1: json["VendorAddressL1"],
-        vendorAddressL2: json["VendorAddressL2"],
-        vendorPinCode: json["VendorPinCode"],
-        vendorEmail: json["VendorEmail"],
-        vendorWebUrl: json["VendorWebURL"],
-        vendorGpsLocation: (json["VendorGPSLocation"] as String?) ?? "",
-        vendorBusinessPicUrl1: json["VendorBusinessPicUrl1"],
+        vendorId: int.tryParse(json["VendorId"]?.toString() ?? "0") ?? 0,
+        vendorBusinessName: json["VendorBusinessName"]?.toString() ?? "",
+        vendorBusinessDescription:
+            json["VendorBusinessDescription"]?.toString() ?? "",
+        vendorBranchName: json["VendorBranchName"]?.toString() ?? "",
+        landMark: json["LandMark"]?.toString() ?? "",
+        vendorRegdMobileDialCode:
+            int.tryParse(json["VendorRegdMobileDialCode"]?.toString() ?? "0") ??
+                0,
+        vendorRegisteredMobileNumber: int.tryParse(
+                json["VendorRegisteredMobileNumber"]?.toString() ?? "0") ??
+            0,
+        vendorContactPersonName:
+            json["VendorContactPersonName"]?.toString() ?? "",
+        vContPrsnMobDialCode:
+            int.tryParse(json["VContPrsnMobDialCode"]?.toString() ?? "0") ?? 0,
+        vendorContactPersonMobNumber: int.tryParse(
+                json["VendorContactPersonMobNumber"]?.toString() ?? "0") ??
+            0,
+        vendorClassificationId:
+            int.tryParse(json["VendorClassificationID"]?.toString() ?? "0") ??
+                0,
+        vendorClassificationName:
+            json["VendorClassificationName"]?.toString() ?? "",
+        vendorCategories: json["VendorCategories"]?.toString() ?? "",
+        vendorAddressL1: json["VendorAddressL1"]?.toString() ?? "",
+        vendorAddressL2: json["VendorAddressL2"]?.toString() ?? "",
+        vendorPinCode:
+            int.tryParse(json["VendorPinCode"]?.toString() ?? "0") ?? 0,
+        vendorEmail: json["VendorEmail"]?.toString() ?? "",
+        vendorWebUrl: json["VendorWebURL"]?.toString() ?? "",
+        vendorGpsLocation: json["VendorGPSLocation"]?.toString() ?? "",
+        vendorBusinessPicUrl1: json["VendorBusinessPicUrl1"]?.toString() ?? "",
         vendorBusinessPicUrl2: json["VendorBusinessPicUrl2"],
         vendorBusinessPicUrl3: json["VendorBusinessPicUrl3"],
         vendorBusinessPicUrl4: json["VendorBusinessPicUrl4"],

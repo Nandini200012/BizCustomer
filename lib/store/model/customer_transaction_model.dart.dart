@@ -115,12 +115,14 @@ class Transaction {
   final String vendorName;
   final double amount;
   final String transType;
+  final String transDt;
 
   Transaction({
     required this.transDate,
     required this.vendorName,
     required this.amount,
     required this.transType,
+    required this.transDt,
   });
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
@@ -129,6 +131,7 @@ class Transaction {
       vendorName: json['VendorName']?.toString() ?? '',
       amount: (json['Amount'] as num?)?.toDouble() ?? 0.0,
       transType: json['TransType']?.toString() ?? '',
+      transDt: json['TransDt']?.toString() ?? '',
     );
   }
 
@@ -138,6 +141,7 @@ class Transaction {
       'VendorName': vendorName,
       'Amount': amount,
       'TransType': transType,
+      'TransDt': transDt,
     };
   }
 }

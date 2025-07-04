@@ -25,10 +25,12 @@ class PlaceSearchByVendorDetailsModel {
 
   factory PlaceSearchByVendorDetailsModel.fromJson(Map<String, dynamic> json) =>
       PlaceSearchByVendorDetailsModel(
-        transactionStatus: json["transactionStatus"],
-        totalRecords: json["totalRecords"],
-        vendors:
-            List<Vendor>.from(json["vendors"].map((x) => Vendor.fromJson(x))),
+        transactionStatus: json["transactionStatus"] ?? false,
+        totalRecords: json["totalRecords"] ?? 0,
+        vendors: json["vendors"] == null
+            ? []
+            : List<Vendor>.from(
+                (json["vendors"] as List).map((x) => Vendor.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -43,7 +45,7 @@ class Vendor {
   String vendorBusinessName;
   String vendorBusinessDescription;
   String vendorBranchName;
-  var landMark;
+  String landMark;
   num vendorRegdMobileDialCode;
   num vendorRegisteredMobileNumber;
   String vendorContactPersonName;
@@ -58,8 +60,8 @@ class Vendor {
   String vendorEmail;
   String vendorWebUrl;
   String idProofPicUrl1;
-  var idProofPicUrl2;
-  var idProofPicUrl3;
+  String idProofPicUrl2;
+  String idProofPicUrl3;
   String vendorGpsLocation;
   String vendorBusinessPicUrl1;
   String vendorBusinessPicUrl2;
@@ -122,45 +124,45 @@ class Vendor {
   });
 
   factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
-        vendorId: json["VendorId"]??0,
-        vendorBusinessName: json["VendorBusinessName"]??"",
-        vendorBusinessDescription: json["VendorBusinessDescription"]??"",
-        vendorBranchName: json["VendorBranchName"]??"",
-        landMark: json["LandMark"]??"",
-        vendorRegdMobileDialCode: json["VendorRegdMobileDialCode"]??0,
-        vendorRegisteredMobileNumber: json["VendorRegisteredMobileNumber"]??0,
-        vendorContactPersonName: json["VendorContactPersonName"]??"",
-        vContPrsnMobDialCode: json["VContPrsnMobDialCode"]??0,
-        vendorContactPersonMobNumber: json["VendorContactPersonMobNumber"]??0,
-        vendorClassificationId: json["VendorClassificationID"]??0,
-        vendorClassificationName: json["VendorClassificationName"]??"",
-        vendorCategories: json["VendorCategories"]??"",
-        vendorAddressL1: json["VendorAddressL1"]??"",
-        vendorAddressL2: json["VendorAddressL2"]??"",
-        vendorPinCode: json["VendorPinCode"]??0,
-        vendorEmail: json["VendorEmail"]??"",
-        vendorWebUrl: json["VendorWebURL"]??"",
-        idProofPicUrl1: json["IDProofPicURL1"]??"",
-        idProofPicUrl2: json["IDProofPicURL2"]??"",
-        idProofPicUrl3: json["IDProofPicURL3"],
-        vendorGpsLocation: json["VendorGPSLocation"]??"",
-        vendorBusinessPicUrl1: json["VendorBusinessPicUrl1"]??"",
-        vendorBusinessPicUrl2: json["VendorBusinessPicUrl2"]??"",
-        vendorBusinessPicUrl3: json["VendorBusinessPicUrl3"]??"",
-        vendorBusinessPicUrl4: json["VendorBusinessPicUrl4"]??"",
-        vendorBusinessPicUrl5: json["VendorBusinessPicUrl5"]??"",
-        vendorBusinessPicUrl6: json["VendorBusinessPicUrl6"]??"",
-        vendorCountryId: json["VendorCountryID"]??0,
-        vendorCountryName: json["VendorCountryName"]??"",
-        vendorStateId: json["VendorStateID"]??0,
-        vendorStateName: json["VendorStateName"]??"",
-        vendorDistrictId: json["VendorDistrictID"]??0,
-        vendorDistrictName: json["VendorDistrictName"]??"",
-        vendorTownId: json["VendorTownID"]??0,
-        vendorTownName: json["VendorTownName"]??"",
-        vendorPlaceId: json["VendorPlaceID"]??0,
-        vendorPlaceName: json["VendorPlaceName"]??"",
-        iSVendorActive: json["iSVendorActive"],
+        vendorId: json["VendorId"] ?? 0,
+        vendorBusinessName: json["VendorBusinessName"] ?? "",
+        vendorBusinessDescription: json["VendorBusinessDescription"] ?? "",
+        vendorBranchName: json["VendorBranchName"] ?? "",
+        landMark: json["LandMark"] ?? "",
+        vendorRegdMobileDialCode: json["VendorRegdMobileDialCode"] ?? 0,
+        vendorRegisteredMobileNumber: json["VendorRegisteredMobileNumber"] ?? 0,
+        vendorContactPersonName: json["VendorContactPersonName"] ?? "",
+        vContPrsnMobDialCode: json["VContPrsnMobDialCode"] ?? 0,
+        vendorContactPersonMobNumber: json["VendorContactPersonMobNumber"] ?? 0,
+        vendorClassificationId: json["VendorClassificationID"] ?? 0,
+        vendorClassificationName: json["VendorClassificationName"] ?? "",
+        vendorCategories: json["VendorCategories"] ?? "",
+        vendorAddressL1: json["VendorAddressL1"] ?? "",
+        vendorAddressL2: json["VendorAddressL2"] ?? "",
+        vendorPinCode: json["VendorPinCode"] ?? 0,
+        vendorEmail: json["VendorEmail"] ?? "",
+        vendorWebUrl: json["VendorWebURL"] ?? "",
+        idProofPicUrl1: json["IDProofPicURL1"] ?? "",
+        idProofPicUrl2: json["IDProofPicURL2"] ?? "",
+        idProofPicUrl3: json["IDProofPicURL3"] ?? "",
+        vendorGpsLocation: json["VendorGPSLocation"] ?? "",
+        vendorBusinessPicUrl1: json["VendorBusinessPicUrl1"] ?? "",
+        vendorBusinessPicUrl2: json["VendorBusinessPicUrl2"] ?? "",
+        vendorBusinessPicUrl3: json["VendorBusinessPicUrl3"] ?? "",
+        vendorBusinessPicUrl4: json["VendorBusinessPicUrl4"] ?? "",
+        vendorBusinessPicUrl5: json["VendorBusinessPicUrl5"] ?? "",
+        vendorBusinessPicUrl6: json["VendorBusinessPicUrl6"] ?? "",
+        vendorCountryId: json["VendorCountryID"] ?? 0,
+        vendorCountryName: json["VendorCountryName"] ?? "",
+        vendorStateId: json["VendorStateID"] ?? 0,
+        vendorStateName: json["VendorStateName"] ?? "",
+        vendorDistrictId: json["VendorDistrictID"] ?? 0,
+        vendorDistrictName: json["VendorDistrictName"] ?? "",
+        vendorTownId: json["VendorTownID"] ?? 0,
+        vendorTownName: json["VendorTownName"] ?? "",
+        vendorPlaceId: json["VendorPlaceID"] ?? 0,
+        vendorPlaceName: json["VendorPlaceName"] ?? "",
+        iSVendorActive: json["iSVendorActive"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {

@@ -1,4 +1,4 @@
-package com.example.biz_cus
+package com.Bizatom.app
 
 import android.content.Intent
 import android.net.Uri

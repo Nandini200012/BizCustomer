@@ -4,122 +4,129 @@
 
 import 'dart:convert';
 
-StoreSearchFilterModel storeSearchFilterModelFromJson(String str) => StoreSearchFilterModel.fromJson(json.decode(str));
+StoreSearchFilterModel storeSearchFilterModelFromJson(String str) =>
+    StoreSearchFilterModel.fromJson(json.decode(str));
 
-String storeSearchFilterModelToJson(StoreSearchFilterModel data) => json.encode(data.toJson());
+String storeSearchFilterModelToJson(StoreSearchFilterModel data) =>
+    json.encode(data.toJson());
 
 class StoreSearchFilterModel {
-    bool? transactionStatus;
-    int? totalRecords;
-    int? totalFilteredRecords;
-    List<Vendor>? vendorss;
+  bool? transactionStatus;
+  int? totalRecords;
+  int? totalFilteredRecords;
+  List<Vendor>? vendorss;
 
-    StoreSearchFilterModel({
-         this.transactionStatus,
-        this.totalRecords,
-         this.totalFilteredRecords,
-         this.vendorss,
-    });
+  StoreSearchFilterModel({
+    this.transactionStatus,
+    this.totalRecords,
+    this.totalFilteredRecords,
+    this.vendorss,
+  });
 
-    factory StoreSearchFilterModel.fromJson(Map<String, dynamic> json) => StoreSearchFilterModel(
-        transactionStatus: json["transactionStatus"],
-        totalRecords: json["totalRecords"],
-        totalFilteredRecords: json["totalFilteredRecords"],
-        vendorss: List<Vendor>.from(json["vendors"].map((x) => Vendor.fromJson(x))),
-    );
+  factory StoreSearchFilterModel.fromJson(Map<String, dynamic> json) =>
+      StoreSearchFilterModel(
+        transactionStatus: json["transactionStatus"] ?? false,
+        totalRecords: json["totalRecords"] ?? 0,
+        totalFilteredRecords: json["totalFilteredRecords"] ?? 0,
+        vendorss: json["vendors"] == null
+            ? []
+            : List<Vendor>.from(json["vendors"].map((x) => Vendor.fromJson(x))),
+      );
 
-    Map<String, dynamic> toJson() => {
-        "transactionStatus": transactionStatus,
-        "totalRecords": totalRecords,
-        "totalFilteredRecords": totalFilteredRecords,
-        "vendors": List<dynamic>.from(vendorss!.map((x) => x.toJson())),
-    };
+  Map<String, dynamic> toJson() => {
+        "transactionStatus": transactionStatus ?? false,
+        "totalRecords": totalRecords ?? 0,
+        "totalFilteredRecords": totalFilteredRecords ?? 0,
+        "vendors": vendorss == null
+            ? []
+            : List<dynamic>.from(vendorss!.map((x) => x.toJson())),
+      };
 }
 
 class Vendor {
-    int vendorId;
-    String vendorBusinessName;
-    String vendorBusinessDescription;
-    String vendorBranchName;
-    String landMark;
-    int vendorRegdMobileDialCode;
-    int vendorRegisteredMobileNumber;
-    String vendorContactPersonName;
-    int vContPrsnMobDialCode;
-    int vendorContactPersonMobNumber;
-    int vendorClassificationId;
-    String vendorClassificationName;
-    String vendorCategories;
-    String vendorAddressL1;
-    String vendorAddressL2;
-    int vendorPinCode;
-    String vendorEmail;
-    String vendorWebUrl;
-    String vendorGpsLocation;
-    String vendorBusinessPicUrl1;
-    dynamic vendorBusinessPicUrl2;
-    dynamic vendorBusinessPicUrl3;
-    dynamic vendorBusinessPicUrl4;
-    dynamic vendorBusinessPicUrl5;
-    bool iSVendorActive;
+  int vendorId;
+  String vendorBusinessName;
+  String vendorBusinessDescription;
+  String vendorBranchName;
+  String landMark;
+  int vendorRegdMobileDialCode;
+  int vendorRegisteredMobileNumber;
+  String vendorContactPersonName;
+  int vContPrsnMobDialCode;
+  int vendorContactPersonMobNumber;
+  int vendorClassificationId;
+  String vendorClassificationName;
+  String vendorCategories;
+  String vendorAddressL1;
+  String vendorAddressL2;
+  int vendorPinCode;
+  String vendorEmail;
+  String vendorWebUrl;
+  String vendorGpsLocation;
+  String vendorBusinessPicUrl1;
+  dynamic vendorBusinessPicUrl2;
+  dynamic vendorBusinessPicUrl3;
+  dynamic vendorBusinessPicUrl4;
+  dynamic vendorBusinessPicUrl5;
+  bool iSVendorActive;
 
-    Vendor({
-        required this.vendorId,
-        required this.vendorBusinessName,
-        required this.vendorBusinessDescription,
-        required this.vendorBranchName,
-        required this.landMark,
-        required this.vendorRegdMobileDialCode,
-        required this.vendorRegisteredMobileNumber,
-        required this.vendorContactPersonName,
-        required this.vContPrsnMobDialCode,
-        required this.vendorContactPersonMobNumber,
-        required this.vendorClassificationId,
-        required this.vendorClassificationName,
-        required this.vendorCategories,
-        required this.vendorAddressL1,
-        required this.vendorAddressL2,
-        required this.vendorPinCode,
-        required this.vendorEmail,
-        required this.vendorWebUrl,
-        required this.vendorGpsLocation,
-        required this.vendorBusinessPicUrl1,
-        required this.vendorBusinessPicUrl2,
-        required this.vendorBusinessPicUrl3,
-        required this.vendorBusinessPicUrl4,
-        required this.vendorBusinessPicUrl5,
-        required this.iSVendorActive,
-    });
+  Vendor({
+    required this.vendorId,
+    required this.vendorBusinessName,
+    required this.vendorBusinessDescription,
+    required this.vendorBranchName,
+    required this.landMark,
+    required this.vendorRegdMobileDialCode,
+    required this.vendorRegisteredMobileNumber,
+    required this.vendorContactPersonName,
+    required this.vContPrsnMobDialCode,
+    required this.vendorContactPersonMobNumber,
+    required this.vendorClassificationId,
+    required this.vendorClassificationName,
+    required this.vendorCategories,
+    required this.vendorAddressL1,
+    required this.vendorAddressL2,
+    required this.vendorPinCode,
+    required this.vendorEmail,
+    required this.vendorWebUrl,
+    required this.vendorGpsLocation,
+    required this.vendorBusinessPicUrl1,
+    required this.vendorBusinessPicUrl2,
+    required this.vendorBusinessPicUrl3,
+    required this.vendorBusinessPicUrl4,
+    required this.vendorBusinessPicUrl5,
+    required this.iSVendorActive,
+  });
 
-    factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
-        vendorId: json["VendorId"],
-        vendorBusinessName: json["VendorBusinessName"],
-        vendorBusinessDescription: json["VendorBusinessDescription"],
-        vendorBranchName: json["VendorBranchName"],
-        landMark: json["LandMark"],
-        vendorRegdMobileDialCode: json["VendorRegdMobileDialCode"],
-        vendorRegisteredMobileNumber: json["VendorRegisteredMobileNumber"],
-        vendorContactPersonName: json["VendorContactPersonName"],
-        vContPrsnMobDialCode: json["VContPrsnMobDialCode"],
-        vendorContactPersonMobNumber: json["VendorContactPersonMobNumber"],
-        vendorClassificationId: json["VendorClassificationID"],
-        vendorClassificationName: json["VendorClassificationName"],
-        vendorCategories: json["VendorCategories"],
-        vendorAddressL1: json["VendorAddressL1"],
-        vendorAddressL2: json["VendorAddressL2"],
-        vendorPinCode: json["VendorPinCode"],
-        vendorEmail: json["VendorEmail"],
-        vendorWebUrl: json["VendorWebURL"],
-        vendorGpsLocation: json["VendorGPSLocation"],
-        vendorBusinessPicUrl1: json["VendorBusinessPicUrl1"],
+  factory Vendor.fromJson(Map<String, dynamic> json) => Vendor(
+        vendorId: json["VendorId"] ?? 0,
+        vendorBusinessName: json["VendorBusinessName"] ?? "",
+        vendorBusinessDescription: json["VendorBusinessDescription"] ?? "",
+        vendorBranchName: json["VendorBranchName"] ?? "",
+        landMark: json["LandMark"] ?? "",
+        vendorRegdMobileDialCode: json["VendorRegdMobileDialCode"] ?? 0,
+        vendorRegisteredMobileNumber: json["VendorRegisteredMobileNumber"] ?? 0,
+        vendorContactPersonName: json["VendorContactPersonName"] ?? "",
+        vContPrsnMobDialCode: json["VContPrsnMobDialCode"] ?? 0,
+        vendorContactPersonMobNumber: json["VendorContactPersonMobNumber"] ?? 0,
+        vendorClassificationId: json["VendorClassificationID"] ?? 0,
+        vendorClassificationName: json["VendorClassificationName"] ?? "",
+        vendorCategories: json["VendorCategories"] ?? "",
+        vendorAddressL1: json["VendorAddressL1"] ?? "",
+        vendorAddressL2: json["VendorAddressL2"] ?? "",
+        vendorPinCode: json["VendorPinCode"] ?? 0,
+        vendorEmail: json["VendorEmail"] ?? "",
+        vendorWebUrl: json["VendorWebURL"] ?? "",
+        vendorGpsLocation: json["VendorGPSLocation"] ?? "",
+        vendorBusinessPicUrl1: json["VendorBusinessPicUrl1"] ?? "",
         vendorBusinessPicUrl2: json["VendorBusinessPicUrl2"],
         vendorBusinessPicUrl3: json["VendorBusinessPicUrl3"],
         vendorBusinessPicUrl4: json["VendorBusinessPicUrl4"],
         vendorBusinessPicUrl5: json["VendorBusinessPicUrl5"],
-        iSVendorActive: json["iSVendorActive"],
-    );
+        iSVendorActive: json["iSVendorActive"] ?? false,
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "VendorId": vendorId,
         "VendorBusinessName": vendorBusinessName,
         "VendorBusinessDescription": vendorBusinessDescription,
@@ -145,5 +152,5 @@ class Vendor {
         "VendorBusinessPicUrl4": vendorBusinessPicUrl4,
         "VendorBusinessPicUrl5": vendorBusinessPicUrl5,
         "iSVendorActive": iSVendorActive,
-    };
+      };
 }

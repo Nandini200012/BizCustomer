@@ -7,6 +7,7 @@ import 'package:reward_hub_customer/Utils/constants.dart';
 import 'package:reward_hub_customer/Utils/urls.dart';
 import 'package:reward_hub_customer/search/search_store_details.dart';
 import 'package:reward_hub_customer/store/model/search_town_model.dart';
+import 'package:reward_hub_customer/wallet/wallet_screen2.dart';
 
 class SearchScreen2 extends StatefulWidget {
   const SearchScreen2({super.key});
@@ -89,14 +90,20 @@ class _SearchScreen2State extends State<SearchScreen2> {
         backgroundColor: Colors.white,
         // resizeToAvoidBottomInset: false,
         appBar: AppBar(
-            title: Text(
-              "Search Place",
-              style:
-                  TextStyle(fontWeight: FontWeight.w500, color: Colors.black),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          centerTitle: true,
+          leading: null,
+          title: Text(
+            "Search Place",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF2C2C2C),
+              fontSize: 18,
+              letterSpacing: 0.5,
             ),
-            centerTitle: true,
-            elevation: 0.0,
-            backgroundColor: Colors.white),
+          ),
+        ),
         // body: Stack(
         //   children: [
         //   Sample2()
@@ -106,46 +113,45 @@ class _SearchScreen2State extends State<SearchScreen2> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Constants().appColor.withOpacity(0.04),
+                        blurRadius: 8,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                   child: TextFormField(
-                    // keyboardAppearance: Brightness.dark,
                     focusNode: searchFocus,
                     controller: _searchController,
                     onChanged: (value) {
                       filterPlaces(value);
                     },
+                    style: TextStyle(fontSize: 15, color: Color(0xFF2C2C2C)),
                     decoration: InputDecoration(
-                      hintText: "Search...",
-                      //  hintStyle: TextStyle(fontSize: 12.0.sp, color: Colors.grey[400]),
+                      hintText: "Search for a place...",
+                      hintStyle:
+                          TextStyle(color: Colors.grey[400], fontSize: 15),
+                      border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 8.0, vertical: 8.0),
+                          horizontal: 16.0, vertical: 14.0),
                       suffixIcon: _searchController.text.isEmpty
-                          ? Icon(
-                              Icons.search,
-                              color: Constants().appColor,
-                            )
+                          ? Icon(Icons.search, color: Constants().appColor)
                           : InkWell(
                               onTap: () {
                                 _searchController.clear();
                                 filterPlaces('');
                                 searchFocus.unfocus();
                               },
-                              child: Icon(
-                                Icons.close,
-                                color: Constants().appColor,
-                              ),
+                              child: Icon(Icons.close,
+                                  color: Constants().appColor),
                             ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants().appColor),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Constants().appColor),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
                     ),
                   ),
                 ),
@@ -154,59 +160,101 @@ class _SearchScreen2State extends State<SearchScreen2> {
               filteredPlaces.isNotEmpty
                   ? Expanded(
                       child: ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          physics: filteredPlaces.length == 0
-                              ? NeverScrollableScrollPhysics()
-                              : ClampingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: filteredPlaces.length,
-                          itemBuilder: (context, index) {
-                            filteredPlaces.sort(
-                                (a, b) => a.placeName.compareTo(b.placeName));
-                            final place = filteredPlaces[index];
-
-                            return GestureDetector(
-                              onTap: () {
-                                handleCategoryTap(
-                                    filteredPlaces[index].placeId.toString());
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      SearchStoreDetailsScreen(
-                                    placeId: filteredPlaces[index]
-                                        .placeId
-                                        .toString(),
+                        scrollDirection: Axis.vertical,
+                        physics: filteredPlaces.isEmpty
+                            ? NeverScrollableScrollPhysics()
+                            : ClampingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: filteredPlaces.length,
+                        itemBuilder: (context, index) {
+                          filteredPlaces.sort(
+                              (a, b) => a.placeName.compareTo(b.placeName));
+                          final place = filteredPlaces[index];
+                          return GestureDetector(
+                            onTap: () {
+                              handleCategoryTap(
+                                  filteredPlaces[index].placeId.toString());
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => SearchStoreDetailsScreen(
+                                  placeId:
+                                      filteredPlaces[index].placeId.toString(),
+                                ),
+                              ));
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        Constants().appColor.withOpacity(0.04),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 2),
                                   ),
-                                ));
-                              },
+                                ],
+                              ),
                               child: ListTile(
                                 leading: CircleAvatar(
-                                    // ignore: sort_child_properties_last
-                                    child: Text(
-                                      place.placeName
-                                          .substring(0, 1)
-                                          .toUpperCase(),
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18.0,
-                                      ),
+                                  backgroundColor:
+                                      Constants().appColor.withOpacity(0.12),
+                                  child: Text(
+                                    place.placeName
+                                        .substring(0, 1)
+                                        .toUpperCase(),
+                                    style: TextStyle(
+                                      color: Constants().appColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18.0,
                                     ),
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 219, 205, 164)),
-                                title: Text(place.placeName),
-                                subtitle: Text(place.townName),
+                                  ),
+                                ),
+                                title: Text(
+                                  place.placeName,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                    color: Color(0xFF2C2C2C),
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  place.townName,
+                                  style: TextStyle(
+                                    color: Color(0xFF2C2C2C).withOpacity(0.6),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                trailing: Icon(Icons.chevron_right,
+                                    color: Constants().appColor),
                               ),
-                            );
-                          }),
+                            ),
+                          );
+                        },
+                      ),
                     )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Text("No Data Found..."),
-                        )
-                      ],
+                  : Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off_rounded,
+                                size: 48,
+                                color: Constants().appColor.withOpacity(0.18)),
+                            SizedBox(height: 16),
+                            Text(
+                              "No Data Found...",
+                              style: TextStyle(
+                                color: Color(0xFF2C2C2C).withOpacity(0.5),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
             ],
           ),
@@ -214,42 +262,6 @@ class _SearchScreen2State extends State<SearchScreen2> {
       ),
     );
   }
-
-// void filterPlaces(String query) {
-//     setState(() {
-//       filteredPlaces = places
-//           .where(
-//             (place) =>
-//                 place.placeName.toLowerCase().contains(query.toLowerCase()) ||
-//                 place.townName.toLowerCase().contains(query.toLowerCase()),
-//           )
-//           .toList();
-
-//       filteredPlaces.sort((a, b) {
-//         bool aPlaceNameStartsWithQuery =
-//             a.placeName.toLowerCase().startsWith(query.toLowerCase());
-//         bool bPlaceNameStartsWithQuery =
-//             b.placeName.toLowerCase().startsWith(query.toLowerCase());
-
-//         bool aTownNameStartsWithQuery =
-//             a.townName.toLowerCase().startsWith(query.toLowerCase());
-//         bool bTownNameStartsWithQuery =
-//             b.townName.toLowerCase().startsWith(query.toLowerCase());
-
-//         if (aPlaceNameStartsWithQuery && !bPlaceNameStartsWithQuery) {
-//           return -1; // a place name comes first
-//         } else if (!aPlaceNameStartsWithQuery && bPlaceNameStartsWithQuery) {
-//           return 1; // b place name comes first
-//         } else if (aTownNameStartsWithQuery && !bTownNameStartsWithQuery) {
-//           return -1; // a town name comes first
-//         } else if (!aTownNameStartsWithQuery && bTownNameStartsWithQuery) {
-//           return 1; // b town name comes first
-//         } else {
-//           return a.placeName.compareTo(b.placeName); // sort alphabetically
-//         }
-//       });
-//     });
-//   }
 
   void filterPlaces(String query) {
     setState(() {

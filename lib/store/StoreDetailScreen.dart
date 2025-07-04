@@ -27,17 +27,69 @@ class StoreDetailScreen extends StatefulWidget {
   StoreDetailScreen(this.storeList);
 
   @override
-  State<StatefulWidget> createState() {
-    return StoreDetailScreenState(this.storeList);
-  }
+  State<StatefulWidget> createState() => StoreDetailScreenState(this.storeList);
 }
 
 class StoreDetailScreenState extends State<StoreDetailScreen> {
   List<String> imgList = [];
   List<String> tagList = [];
+  int _currentImageIndex = 0;
   dynamic storeList;
   static const platform = MethodChannel('dialer.channel/call');
+
   StoreDetailScreenState(this.storeList);
+
+  String get vendorId {
+    try {
+      if (storeList is StoreModel) {
+        return storeList.id.toString();
+      } else if (storeList is filter.Vendor) {
+        return storeList.vendorId.toString();
+      }
+    } catch (e) {
+      print("Error getting vendorId: $e");
+    }
+    return "";
+  }
+
+  String get vendorCategories {
+    try {
+      if (storeList is StoreModel) {
+        return (storeList.vendorCategories ?? "").toString();
+      } else if (storeList is filter.Vendor) {
+        return (storeList.vendorCategories ?? "").toString();
+      }
+    } catch (e) {
+      print("Error getting vendorCategories: $e");
+    }
+    return "";
+  }
+
+  String get vendorName {
+    try {
+      if (storeList is StoreModel) {
+        return storeList.name.toString();
+      } else if (storeList is filter.Vendor) {
+        return storeList.vendorBusinessName.toString();
+      }
+    } catch (e) {
+      print("Error getting vendorName: $e");
+    }
+    return "";
+  }
+
+  String get vendorClassificationName {
+    try {
+      if (storeList is StoreModel) {
+        return (storeList.classificationName ?? "").toString();
+      } else if (storeList is filter.Vendor) {
+        return (storeList.vendorClassificationName ?? "").toString();
+      }
+    } catch (e) {
+      print("Error getting vendorClassificationName: $e");
+    }
+    return "";
+  }
 
   @override
   void initState() {
@@ -63,355 +115,301 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
         storeList.vendorBusinessPicUrl5 ?? "",
       ];
     }
-    tagList = storeList.vendorCategories.split(',');
+    imgList = imgList.where((url) => url.isNotEmpty).toList();
+    String categories = vendorCategories;
+    tagList = categories.isNotEmpty ? categories.split(',') : [];
   }
-
-  Widget profileImage() => FullScreenWidget(
-        disposeLevel: DisposeLevel.High,
-        child: Hero(
-          tag: "profile_image",
-          child: Consumer<UserData>(
-            builder: (context, userdata, _) {
-              String profilePhotoPath = SharedPrefrence().getUserProfilePhoto();
-              File profilePhotoFile = File(profilePhotoPath);
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: profilePhotoFile.existsSync()
-                    ? Image.file(
-                        File(SharedPrefrence().getUserProfilePhoto()),
-                        height: 40,
-                        width: 40,
-                        fit: BoxFit.fill,
-                      )
-                    : Image.asset(
-                        "assets/images/ic_profile.png",
-                        height: 40,
-                        width: 40,
-                        fit: BoxFit.cover,
-                      ),
-              );
-            },
-          ),
-        ),
-      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              flex: 0,
-              child: Container(
-                height: 50,
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      flex: 0,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: Icon(Icons.arrow_back, size: 30),
-                        ),
-                      ),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 300.0,
+                floating: false,
+                pinned: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                leading: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    margin: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "STORE",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                    child: Icon(Icons.arrow_back, color: Colors.black),
+                  ),
+                ),
+                actions: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ProfileScreen())),
+                      child: Container(
+                        margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 0,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 10.w, top: 10.h),
-                        child: GestureDetector(
-                          onTap: () {
-                            //Navigator.pop(context, true);
-                            //Navigator.push(context, SlideRightRoute(page: IntroScreen()));
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ProfileScreen()));
-                            // Navigator.push(
-                            //     context,
-                            //     PageTransition(
-                            //         type: PageTransitionType.rightToLeft,
-                            //         child: ProfileScreen()));
-                          },
-                          child: Consumer<UserData>(
-                            builder: (context, userData, _) {
-                              String profilePhotoPath =
-                                  SharedPrefrence().getUserProfilePhoto();
-                              File profilePhotoFile = File(profilePhotoPath);
-                              return profilePhotoFile.existsSync()
-                                  ? ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                      child: Image.file(
-                                        profilePhotoFile,
-                                        height: 40.h,
-                                        width: 40.w,
-                                        fit: BoxFit.cover,
-                                      ),
+                        child: Consumer<UserData>(
+                          builder: (context, userData, _) {
+                            String profilePhotoPath =
+                                SharedPrefrence().getUserProfilePhoto();
+                            File profilePhotoFile = File(profilePhotoPath);
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: profilePhotoFile.existsSync()
+                                  ? Image.file(
+                                      profilePhotoFile,
+                                      height: 35.h,
+                                      width: 35.w,
+                                      fit: BoxFit.cover,
                                     )
                                   : Image.asset(
                                       "assets/images/ic_profile.png",
-                                      height: 40.h,
-                                      width: 40.w,
-                                    );
-                            },
-                            // child: Image.asset(
-                            //   "assets/images/ic_profile.png",
-                            //   height: 40.h,
-                            //   width: 40.w,
-                            // ),
-                          ),
+                                      height: 35.h,
+                                      width: 35.w,
+                                    ),
+                            );
+                          },
                         ),
-                      ),
-                    )
-                    // Expanded(
-                    //   flex: 0,
-                    //   child: Padding(
-                    //     padding: EdgeInsets.only(right: 10),
-                    //     child: profileImage(),
-                    //   ),
-                    // ),
-                  ],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    homeTopBannerWidget(storeList),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          _buildStoreInfoCard(),
-                          SizedBox(height: 10),
-                          _buildDescriptionCard(),
-                          SizedBox(height: 10),
-                          _buildTags(),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStoreInfoCard() {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              storeList is StoreModel
-                  ? storeList.name ?? ""
-                  : (storeList is filter.Vendor
-                      ? storeList.vendorBusinessName ?? ""
-                      : ''),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            _buildInfoRow(
-              Icons.location_on,
-              "Landmark:",
-              storeList is StoreModel
-                  ? "${storeList.landMark ?? ""}"
-                  : (storeList is filter.Vendor
-                      ? '${storeList.landMark ?? ""}'
-                      : ''),
-            ),
-            _buildInfoRow(
-              Icons.place,
-              "Place:",
-              storeList is StoreModel
-                  ? "${storeList.placeName ?? ""}"
-                  : (storeList is filter.Vendor
-                      ? '${storeList.vendorplaceName ?? ""}'
-                      : ''),
-            ),
-            _buildInfoRow(
-              Icons.location_city,
-              "Town:",
-              storeList is StoreModel
-                  ? "${storeList.townName ?? ""}"
-                  : (storeList is filter.Vendor
-                      ? '${storeList.vendorTownName ?? ""}'
-                      : ''),
-            ),
-            _buildInfoRow(
-              Icons.map,
-              "District:",
-              storeList is StoreModel
-                  ? "${storeList.districtName ?? ""}"
-                  : (storeList is filter.Vendor
-                      ? '${storeList.vendordistrictName ?? ""}'
-                      : ''),
-            ),
-            _buildInfoRow(
-              Icons.pin_drop,
-              "Pin Code:",
-              storeList is StoreModel
-                  ? "${storeList.vendorPincode ?? ""}"
-                  : (storeList is filter.Vendor
-                      ? '${storeList.vendorPinCode ?? ""}'
-                      : ''),
-            ),
-            SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  makePhoneCall(
-                      context, // Pass BuildContext here
-                      storeList is StoreModel
-                          ? storeList.mobileNumber ?? ""
-                          : (storeList is filter.Vendor
-                              ? storeList.vendorRegisteredMobileNumber
-                                      .toString() ??
-                                  ""
-                              : ''),
-                      platform);
-                  // log("mobile number: ${storeList.mobileNumber}");
-                },
-                icon: Center(child: Icon(Icons.call, color: Colors.white)),
-                label: Text(""),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(10),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDescriptionCard() {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Description",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              storeList is StoreModel
-                  ? storeList.discription ?? ""
-                  : (storeList is filter.Vendor
-                      ? storeList.vendorBusinessDescription ?? ""
-                      : ''),
-              // textAlign: TextAlign.justify,
-              style: TextStyle(color: Colors.black, fontSize: 14),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTags() {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Categories",
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 10),
-            ListView.separated(
-              shrinkWrap:
-                  true, // Ensures the ListView takes only the needed space
-              physics:
-                  NeverScrollableScrollPhysics(), // Prevents scrolling inside the ListView
-              itemCount: tagList.length,
-              separatorBuilder: (context, index) => SizedBox(height: 5),
-              itemBuilder: (context, index) {
-                return IntrinsicWidth(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Constants().appColor,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      tagList[index],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                );
-              },
-            ),
-          ],
-        ),
+                ],
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(
+                    children: [
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 350,
+                          viewportFraction: 1,
+                          autoPlay: imgList.length > 1,
+                          autoPlayInterval: Duration(seconds: 3),
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentImageIndex = index;
+                            });
+                          },
+                        ),
+                        items: imgList.isEmpty
+                            ? [
+                                Image.asset(
+                                  "assets/images/store.jpg",
+                                  fit: BoxFit.cover,
+                                )
+                              ]
+                            : imgList.map((item) {
+                                return CachedNetworkImage(
+                                  imageUrl: item,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  placeholder: (context, url) => Center(
+                                    child: CupertinoActivityIndicator(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) =>
+                                      Image.asset(
+                                    "assets/images/store.jpg",
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              }).toList(),
+                      ),
+                      if (imgList.length > 1)
+                        Positioned(
+                          bottom: 20,
+                          left: 0,
+                          right: 0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: imgList.asMap().entries.map((entry) {
+                              return Container(
+                                width: 8.0,
+                                height: 8.0,
+                                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white.withOpacity(
+                                    _currentImageIndex == entry.key ? 0.9 : 0.4,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                storeList is StoreModel
+                                    ? storeList.name ?? ""
+                                    : (storeList is filter.Vendor
+                                        ? storeList.vendorBusinessName ?? ""
+                                        : ''),
+                                style: TextStyle(
+                                  fontSize: 24.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                makePhoneCall(
+                                  context,
+                                  storeList is StoreModel
+                                      ? storeList.mobileNumber ?? ""
+                                      : (storeList is filter.Vendor
+                                          ? storeList
+                                                  .vendorRegisteredMobileNumber
+                                                  .toString() ??
+                                              ""
+                                          : ''),
+                                  platform,
+                                );
+                              },
+                              icon: Icon(Icons.call, color: Colors.white),
+                              label: Text('Call Now'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16),
+                        _buildLocationInfo(),
+                        SizedBox(height: 24),
+                        _buildDescriptionSection(),
+                        SizedBox(height: 24),
+                        _buildCategoriesSection(),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
+  Widget _buildLocationInfo() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Location Details',
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          SizedBox(height: 12),
+          _buildInfoRow(
+            Icons.location_on,
+            storeList is StoreModel
+                ? "${storeList.landMark ?? ""}"
+                : (storeList is filter.Vendor ? storeList.landMark ?? "" : ''),
+            "Landmark",
+          ),
+          _buildInfoRow(
+            Icons.place,
+            storeList is StoreModel
+                ? "${storeList.placeName ?? ""}"
+                : (storeList is filter.Vendor
+                    ? storeList.vendorplaceName ?? ""
+                    : ''),
+            "Place",
+          ),
+          _buildInfoRow(
+            Icons.location_city,
+            storeList is StoreModel
+                ? "${storeList.townName ?? ""}"
+                : (storeList is filter.Vendor
+                    ? storeList.vendorTownName ?? ""
+                    : ''),
+            "Town",
+          ),
+          _buildInfoRow(
+            Icons.map,
+            storeList is StoreModel
+                ? "${storeList.districtName ?? ""}"
+                : (storeList is filter.Vendor
+                    ? storeList.vendordistrictName ?? ""
+                    : ''),
+            "District",
+          ),
+          _buildInfoRow(
+            Icons.pin_drop,
+            storeList is StoreModel
+                ? "${storeList.vendorPincode ?? ""}"
+                : (storeList is filter.Vendor
+                    ? storeList.vendorPinCode ?? ""
+                    : ''),
+            "Pin Code",
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String value, String label) {
+    if (value.isEmpty) return SizedBox.shrink();
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 18, color: Colors.grey[700]),
-          SizedBox(width: 5),
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 20, color: Constants().appColor),
+          ),
+          SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,14 +417,18 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
                 Text(
                   label,
                   style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12.sp,
+                    color: Colors.grey[600],
                   ),
                 ),
+                SizedBox(height: 4),
                 Text(
                   value,
-                  style: TextStyle(color: Colors.black, fontSize: 14),
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -436,58 +438,78 @@ class StoreDetailScreenState extends State<StoreDetailScreen> {
     );
   }
 
-  Widget homeTopBannerWidget(dynamic storeList) {
-    List<String> nonEmptyImageUrls =
-        imgList.where((url) => url != null && url.isNotEmpty).toList();
+  Widget _buildDescriptionSection() {
+    final description = storeList is StoreModel
+        ? storeList.discription ?? ""
+        : (storeList is filter.Vendor
+            ? storeList.vendorBusinessDescription ?? ""
+            : '');
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
+    if (description.isEmpty) return SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () {},
-          child: Padding(
-            padding: EdgeInsets.only(top: 0, bottom: 20),
-            child: CarouselSlider(
-              options: CarouselOptions(
-                height: 200,
-                autoPlayAnimationDuration: Duration(milliseconds: 500),
-                autoPlay: nonEmptyImageUrls.length > 1,
-                autoPlayInterval: Duration(seconds: 2),
-                autoPlayCurve: Curves.fastOutSlowIn,
-                viewportFraction: 1,
-              ),
-              items: nonEmptyImageUrls
-                  .map(
-                    (item) => Container(
-                      child: CachedNetworkImage(
-                        imageUrl: item,
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.fitHeight,
-                              colorFilter: ColorFilter.mode(
-                                Colors.black54.withOpacity(0.5),
-                                BlendMode.lighten,
-                              ),
-                            ),
-                          ),
-                        ),
-                        placeholder: (context, url) => Center(
-                          child: CupertinoActivityIndicator(
-                            color: Colors.black,
-                            radius: 16,
-                          ),
-                        ),
-                      ),
-                      margin: EdgeInsets.only(right: 0, left: 0),
-                    ),
-                  )
-                  .toList(),
-            ),
+        Text(
+          'About',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
           ),
+        ),
+        SizedBox(height: 12),
+        Text(
+          description,
+          style: TextStyle(
+            fontSize: 14.sp,
+            color: Colors.black87,
+            height: 1.5,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoriesSection() {
+    if (tagList.isEmpty) return SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Categories',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: tagList.map((tag) {
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: Constants().appColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: Constants().appColor,
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                tag,
+                style: TextStyle(
+                  color: Constants().appColor,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -498,24 +520,46 @@ Future<void> makePhoneCall(
     BuildContext context, String phoneNumber, dynamic platform) async {
   if (phoneNumber.isEmpty) return;
 
-  // Show confirmation dialog before making the call
   final bool? shouldCall = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title: Text(
         'Confirm Call',
         style: TextStyle(
-            color: Colors.black, fontWeight: FontWeight.w500, fontSize: 18),
+          color: Colors.black87,
+          fontWeight: FontWeight.w600,
+          fontSize: 18.sp,
+        ),
       ),
-      content: Text('Do you want to call $phoneNumber ?'),
+      content: Text(
+        'Do you want to call $phoneNumber ?',
+        style: TextStyle(
+          fontSize: 14.sp,
+          color: Colors.black87,
+        ),
+      ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text('No'),
+          child: Text(
+            'No',
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 14.sp,
+            ),
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text('Yes'),
+          child: Text(
+            'Yes',
+            style: TextStyle(
+              color: Constants().appColor,
+              fontWeight: FontWeight.w600,
+              fontSize: 14.sp,
+            ),
+          ),
         ),
       ],
     ),
@@ -523,23 +567,27 @@ Future<void> makePhoneCall(
 
   if (shouldCall != true) return;
 
-  // Proceed with call based on platform
   if (Platform.isAndroid) {
     try {
       await platform.invokeMethod('makeCall', {'number': phoneNumber});
     } on PlatformException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to make call: ${e.message}")),
+        SnackBar(
+          content: Text("Failed to make call: ${e.message}"),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   } else if (Platform.isIOS) {
     final Uri telUri = Uri(scheme: 'tel', path: phoneNumber);
-
     if (await canLaunchUrl(telUri)) {
       await launchUrl(telUri, mode: LaunchMode.externalApplication);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Cannot launch dialer")),
+        SnackBar(
+          content: Text("Cannot launch dialer"),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
   }

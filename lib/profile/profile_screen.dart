@@ -20,6 +20,7 @@ import 'package:reward_hub_customer/provider/user_data_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:full_screen_image/full_screen_image.dart';
 import 'package:http/http.dart' as http;
+import 'profile_transaction_history_screen.dart';
 
 import '../Utils/urls.dart';
 
@@ -117,8 +118,8 @@ class ProfileScreenState extends State<ProfileScreen> {
                               onTap: () {
                                 Navigator.of(context).pop();
                               },
-                              child:
-                                  Image.asset("assets/images/ic_back_img.png"),
+                              child: Icon(Icons.arrow_back_ios_new_rounded,
+                                  color: Constants().appColor, size: 22),
                             ),
                           ),
                         ),
@@ -129,9 +130,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                             child: Text(
                               "PROFILE",
                               style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
+                                  color: Color(0xFF2C2C2C),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5),
                             ),
                           ),
                         ),
@@ -149,15 +151,37 @@ class ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   flex: 0,
                   child: Container(
-                    height: 250,
+                    height: 280,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Constants().appColor.withOpacity(0.1),
+                          Colors.white
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
                       children: [
-                        profileImage(),
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Constants().appColor.withOpacity(0.2),
+                                blurRadius: 20,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child: profileImage(),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 8.0, top: 8, right: 8),
+                              left: 8.0, top: 16, right: 8),
                           child: Align(
                             alignment: Alignment.center,
                             child: Consumer<UserData>(
@@ -167,7 +191,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16),
+                                    fontSize: 18),
                               );
                             }),
                           ),
@@ -177,9 +201,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                           child: Text(
                             SharedPrefrence().getUserPhone(),
                             style: const TextStyle(
-                                color: Colors.black,
+                                color: Colors.black54,
                                 fontSize: 14,
-                                fontWeight: FontWeight.bold),
+                                fontWeight: FontWeight.w500),
                           ),
                         ),
                         Align(
@@ -190,20 +214,28 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   builder: (context) => EditProfileScreen()));
                             },
                             child: Container(
-                              margin: const EdgeInsets.only(top: 15),
+                              margin: const EdgeInsets.only(top: 20),
                               height: 40,
                               width: 137,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  color: Constants().appColor),
+                                  color: Constants().appColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Constants().appColor.withOpacity(0.3),
+                                      blurRadius: 8,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ]),
                               child: Align(
                                 alignment: Alignment.center,
                                 child: Text(
                                   "EDIT PROFILE",
                                   style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ),
@@ -216,14 +248,24 @@ class ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   flex: 1,
                   child: Container(
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image:
-                                AssetImage("assets/images/ic_profile_bg.png"),
-                            fit: BoxFit.cover)),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 20,
+                          spreadRadius: 5,
+                        ),
+                      ],
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: [
+                        SizedBox(height: 20),
                         Padding(
                           padding:
                               EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -231,49 +273,61 @@ class ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {
                               _launchInWebView(Uri.parse(terms_CoditionUrl));
                             },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Expanded(
-                                  flex: 0,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: Image.asset(
-                                      "assets/images/ic_profile_item_icon.png",
-                                      height: 24,
-                                      width: 24,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    spreadRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.description_outlined,
+                                          color: Constants().appColor,
+                                          size: 24),
                                     ),
                                   ),
-                                ),
-                                const Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 15.0, right: 15),
-                                      child: Text(
-                                        "Terms and conditions",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
+                                  const Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15.0, right: 15),
+                                        child: Text(
+                                          "Terms and conditions",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.asset(
-                                      "assets/images/ic_profile_arrow_forward.png",
-                                      height: 24,
-                                      width: 24,
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: Colors.grey[400],
+                                          size: 18),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -284,53 +338,135 @@ class ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {
                               _launchInWebView(Uri.parse(supportUrl));
                             },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Expanded(
-                                  flex: 0,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: Image.asset(
-                                      "assets/images/ic_profile_item_icon.png",
-                                      height: 24,
-                                      width: 24,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    spreadRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.support_agent_outlined,
+                                          color: Constants().appColor,
+                                          size: 24),
                                     ),
                                   ),
-                                ),
-                                const Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 15.0, right: 15),
-                                      child: Text(
-                                        "Support",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
+                                  const Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15.0, right: 15),
+                                        child: Text(
+                                          "Support",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.asset(
-                                      "assets/images/ic_profile_arrow_forward.png",
-                                      height: 24,
-                                      width: 24,
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: Colors.grey[400],
+                                          size: 18),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                        // Spacer(),
+                        Padding(
+                          padding:
+                              EdgeInsets.only(left: 20, right: 20, top: 20),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProfileTransactionHistoryScreen(),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    spreadRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.history,
+                                          color: Constants().appColor,
+                                          size: 24),
+                                    ),
+                                  ),
+                                  const Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15.0, right: 15),
+                                        child: Text(
+                                          "Transaction History",
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black87,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: Colors.grey[400],
+                                          size: 18),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding:
                               EdgeInsets.only(left: 20, right: 20, top: 20),
@@ -338,49 +474,60 @@ class ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {
                               _showDeleteConfirmation(context);
                             },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Expanded(
-                                  flex: 0,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: Image.asset(
-                                      "assets/images/ic_profile_item_icon.png",
-                                      height: 24,
-                                      width: 24,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 10,
+                                    spreadRadius: 0,
+                                  ),
+                                ],
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Icon(Icons.delete_outline_rounded,
+                                          color: Color(0xFFFF6B6B), size: 24),
                                     ),
                                   ),
-                                ),
-                                const Expanded(
-                                  flex: 1,
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 15.0, right: 15),
-                                      child: Text(
-                                        "Delete Account",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
+                                  const Expanded(
+                                    flex: 1,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15.0, right: 15),
+                                        child: Text(
+                                          "Delete Account",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Image.asset(
-                                      "assets/images/ic_profile_arrow_forward.png",
-                                      height: 24,
-                                      width: 24,
+                                  Expanded(
+                                    flex: 0,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          color: Colors.grey[400],
+                                          size: 18),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -388,62 +535,79 @@ class ProfileScreenState extends State<ProfileScreen> {
                         Padding(
                           padding:
                               EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                flex: 0,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Image.asset(
-                                    "assets/images/ic_profile_item_icon.png",
-                                    height: 24,
-                                    width: 24,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  spreadRadius: 0,
+                                ),
+                              ],
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 16),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Expanded(
+                                  flex: 0,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Icon(Icons.logout_rounded,
+                                        color: Constants().appColor, size: 24),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 1,
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.only(left: 15.0, right: 15),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _handleNewVendorDialog();
-                                      },
-                                      child: Text(
-                                        "Logout",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
+                                Expanded(
+                                  flex: 1,
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 15.0, right: 15),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          _handleNewVendorDialog();
+                                        },
+                                        child: Text(
+                                          "Logout",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black87),
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10.0),
-                                child: FutureBuilder<PackageInfo>(
-                                  future: PackageInfo.fromPlatform(),
-                                  builder: (context, snapshot) {
-                                    switch (snapshot.connectionState) {
-                                      case ConnectionState.done:
-                                        return Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Text(
-                                            'Version: ${snapshot.data!.version}',
-                                          ),
-                                        );
-                                      default:
-                                        return const SizedBox();
-                                    }
-                                  },
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10.0),
+                                  child: FutureBuilder<PackageInfo>(
+                                    future: PackageInfo.fromPlatform(),
+                                    builder: (context, snapshot) {
+                                      switch (snapshot.connectionState) {
+                                        case ConnectionState.done:
+                                          return Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Text(
+                                              'Version: ${snapshot.data!.version}',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          );
+                                        default:
+                                          return const SizedBox();
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],

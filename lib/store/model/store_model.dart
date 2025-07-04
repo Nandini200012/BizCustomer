@@ -1,8 +1,8 @@
 class StoreModel {
-  var id = "";
+  int id = 0;
   var name = "";
   var mobileNumber = "";
-  var classificationID = "";
+  int classificationID = 0;
   var classificationName = "";
   var vendorCategories = "";
   var vendorAddress1 = "";
@@ -15,15 +15,15 @@ class StoreModel {
   var imageURL4 = "";
   var imageURL5 = "";
   var imageURL6 = "";
-  var countryID = "";
+  int countryID = 0;
   var countryName = "";
-  var stateID = "";
+  int stateID = 0;
   var stateName = "";
-  var districtID = "";
+  int districtID = 0;
   var districtName = "";
-  var townID = "";
+  int townID = 0;
   var townName = "";
-  var placeID = "";
+  int placeID = 0;
   var placeName = "";
   var discription = "";
   var vendorRegisteredMobileNumber = "";
@@ -63,10 +63,10 @@ class StoreModel {
 
   factory StoreModel.fromJson(Map<String, dynamic> json) {
     return StoreModel(
-      json['id'] ?? "",
+      int.tryParse(json['id']?.toString() ?? "0") ?? 0,
       json['name'] ?? "",
       json['mobileNumber'] ?? "",
-      json['classificationID'] ?? "",
+      int.tryParse(json['classificationID']?.toString() ?? "0") ?? 0,
       json['classificationName'] ?? "",
       json['vendorCategories'] ?? "",
       json['vendorAddress1'] ?? "",
@@ -79,15 +79,15 @@ class StoreModel {
       json['imageURL4'] ?? "",
       json['imageURL5'] ?? "",
       json['imageURL6'] ?? "",
-      json['countryID'] ?? "",
+      int.tryParse(json['countryID']?.toString() ?? "0") ?? 0,
       json['countryName'] ?? "",
-      json['districtID'] ?? "",
-      json['VendorDistrictName'] ?? "",
-      json['stateID'] ?? "",
+      int.tryParse(json['stateID']?.toString() ?? "0") ?? 0,
       json['stateName'] ?? "",
-      json['townID'] ?? "",
+      int.tryParse(json['districtID']?.toString() ?? "0") ?? 0,
+      json['VendorDistrictName'] ?? "",
+      int.tryParse(json['townID']?.toString() ?? "0") ?? 0,
       json['townName'] ?? "",
-      json['placeID'] ?? "",
+      int.tryParse(json['placeID']?.toString() ?? "0") ?? 0,
       json['placeName'] ?? "",
       json['VendorBusinessDescription'] ?? "",
       json['VendorRegisteredMobileNumber'] ?? "",

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Add this import
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_storage/get_storage.dart';
@@ -11,13 +12,21 @@ import 'package:reward_hub_customer/splash/splash_screen.dart';
 void main() async {
   // Initialize GetStorage
   await GetStorage.init();
+
+  // Lock orientation to portrait mode
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
   runApp(const MyApp());
 }
 
+// Rest of your MyApp class remains the same
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -27,15 +36,9 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Bizatom',
-          // home: SplashScreen(),
           home: SplashScreen(),
-          // home: LoginScreen(),
-          //  home:OTPScreen("","","","","","","","","","",""),
-          //  home:RegisterScreen(),
-          //  home:CreatePasswordScreen("","","","","","","","",""),
           builder: EasyLoading.init(),
           theme: ThemeData(
-              // useMaterial3: false,
               colorScheme: ColorScheme.fromSwatch(
                   accentColor: Constants().appColor,
                   backgroundColor: Colors.white),
