@@ -14,7 +14,6 @@ import 'package:reward_hub_customer/wallet/wallet_screen2.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
-
 import '../Utils/urls.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
