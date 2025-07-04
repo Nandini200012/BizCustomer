@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:reward_hub_customer/Utils/SharedPrefrence.dart';
 import 'package:reward_hub_customer/Utils/constants.dart';
@@ -70,22 +71,98 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Future<void> _pickImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().pickImage(source: source).then((
-      value,
-    ) {
-      if (value != null) {
-        _cropImage(File(value.path));
-      }
-    });
-    ;
+  Future<bool> _requestPermissions() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.photos.request(); // Android 13+
+      final legacyStatus = await Permission.storage.request(); // Android < 13
 
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+      return status.isGranted || legacyStatus.isGranted;
+    } else {
+      return await Permission.photos.request().isGranted;
     }
   }
+
+  Future<void> _pickImage(ImageSource source) async {
+    // Request permissions
+    final granted = await _requestPermissions();
+    if (!granted) {
+      debugPrint("Permission denied");
+      return;
+    }
+
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+
+      if (pickedFile != null) {
+        final image = File(pickedFile.path);
+
+        // Check if file is valid and non-empty
+        if (await image.exists() && await image.length() > 0) {
+          // Optional delay to ensure file write is complete
+          await Future.delayed(const Duration(milliseconds: 100));
+
+          setState(() {
+            _imageFile = image;
+          });
+        } else {
+          debugPrint("Picked image is invalid or empty.");
+        }
+      } else {
+        debugPrint("Image picking was cancelled.");
+      }
+    } catch (e) {
+      debugPrint("Error picking image: $e");
+    }
+  }
+
+  Future<File?> _cropImage(File imgFile) async {
+    try {
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: imgFile.path,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Image Cropper',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+          ),
+          IOSUiSettings(
+            title: 'Image Cropper',
+          ),
+        ],
+      );
+
+      if (croppedFile != null) {
+        final file = File(croppedFile.path);
+        if (await file.exists()) {
+          return file;
+        }
+      }
+    } catch (e) {
+      debugPrint("Error cropping image: $e");
+    }
+
+    return null;
+  }
+
+  // Future<void> _pickImage(ImageSource source) async {
+  //   final pickedFile = await ImagePicker().pickImage(source: source).then((
+  //     value,
+  //   ) {
+  //     if (value != null) {
+  //       _cropImage(File(value.path));
+  //     }
+  //   });
+  //   ;
+
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _imageFile = File(pickedFile.path);
+  //     });
+  //   }
+  // }
 
   void _showImagePicker(BuildContext context) {
     showModalBottomSheet(
@@ -565,27 +642,27 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  Future<void> _cropImage(File imgFile) async {
-    final croppedFile = await ImageCropper().cropImage(
-      sourcePath: imgFile.path,
-      // Removed the invalid 'cropStyle' parameter
-      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-      uiSettings: [
-        AndroidUiSettings(
-          toolbarTitle: "Image Cropper",
-          toolbarColor: Colors.deepOrange,
-          toolbarWidgetColor: Colors.white,
-          initAspectRatio: CropAspectRatioPreset.original,
-          lockAspectRatio: false,
-        ),
-        IOSUiSettings(title: "Image Cropper"),
-      ],
-    );
+  // Future<void> _cropImage(File imgFile) async {
+  //   final croppedFile = await ImageCropper().cropImage(
+  //     sourcePath: imgFile.path,
+  //     // Removed the invalid 'cropStyle' parameter
+  //     aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+  //     uiSettings: [
+  //       AndroidUiSettings(
+  //         toolbarTitle: "Image Cropper",
+  //         toolbarColor: Colors.deepOrange,
+  //         toolbarWidgetColor: Colors.white,
+  //         initAspectRatio: CropAspectRatioPreset.original,
+  //         lockAspectRatio: false,
+  //       ),
+  //       IOSUiSettings(title: "Image Cropper"),
+  //     ],
+  //   );
 
-    if (croppedFile != null) {
-      setState(() {
-        _imageFile = File(croppedFile.path);
-      });
-    }
-  }
+  //   if (croppedFile != null) {
+  //     setState(() {
+  //       _imageFile = File(croppedFile.path);
+  //     });
+  //   }
+  // }
 }

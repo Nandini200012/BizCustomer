@@ -279,7 +279,7 @@ class _StoreCategoriesState extends State<StoreCategories> {
                       crossAxisCount: 2,
                       crossAxisSpacing: 16.w,
                       mainAxisSpacing: 16.h,
-                      childAspectRatio: 1,
+                      childAspectRatio: 0.8,
                     ),
                     itemCount: filteredVendorsList.length,
                     itemBuilder: (context, index) {
@@ -300,6 +300,15 @@ class _StoreCategoriesState extends State<StoreCategories> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                              stops: const [0.6, 1.0],
+                            ),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withOpacity(0.1),
@@ -346,16 +355,44 @@ class _StoreCategoriesState extends State<StoreCategories> {
                                   bottom: 12,
                                   left: 12,
                                   right: 12,
-                                  child: Text(
-                                    store.vendorBusinessName,
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        store.vendorBusinessName,
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        // textAlign: TextAlign.center,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.shopping_bag_outlined,
+                                            color:
+                                                Colors.white.withOpacity(0.8),
+                                            size: 10.sp,
+                                          ),
+                                          SizedBox(width: 4.w),
+                                          Text(
+                                            store.vendorClassificationName,
+                                            style: TextStyle(
+                                              fontSize: 9.sp,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.white,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -462,114 +499,434 @@ class _StoreCategoriesState extends State<StoreCategories> {
 
   // Show place filter bottom sheet
   void _showPlaceFilterBottomSheet() {
+    final TextEditingController searchController = TextEditingController();
+    List<PlaceModel> filteredPlaces = List.from(places);
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.6,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            // Handle bar
-            Container(
-              margin: EdgeInsets.only(top: 8.h),
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            // Header
-            Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Filter by Place',
-                    style: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF2C2C2C),
-                    ),
-                  ),
-                  if (_isPlaceFilterActive)
-                    TextButton(
-                      onPressed: _clearPlaceFilter,
-                      child: Text(
-                        'Clear',
-                        style: TextStyle(
-                          color: Constants().appColor,
-                          fontWeight: FontWeight.w600,
+      elevation: 0,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) => Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 30.h,
+                ),
+                // Header section with back button
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () => Navigator.pop(context),
+                        icon: Icon(
+                          Icons.arrow_back_rounded,
+                          color: Colors.grey[700],
+                          size: 24.sp,
+                        ),
+                        padding: EdgeInsets.all(8.w),
+                        constraints: BoxConstraints(),
+                      ),
+                      SizedBox(width: 8.w),
+                      Expanded(
+                        child: Text(
+                          'Select Location',
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[900],
+                            letterSpacing: -0.3,
+                          ),
                         ),
                       ),
-                    ),
-                ],
-              ),
-            ),
-            Divider(height: 1),
-            // Places list
-            Expanded(
-              child: places.isEmpty
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Constants().appColor),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: places.length,
-                      itemBuilder: (context, index) {
-                        final place = places[index];
-                        final isSelected =
-                            selectedPlaceIdFilter == place.placeId.toString();
-
-                        return ListTile(
-                          title: Text(
-                            place.placeName,
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: isSelected
-                                  ? FontWeight.w600
-                                  : FontWeight.w400,
-                              color: isSelected
-                                  ? Constants().appColor
-                                  : Color(0xFF2C2C2C),
-                            ),
+                      if (_isPlaceFilterActive)
+                        TextButton(
+                          onPressed: _clearPlaceFilter,
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16.w, vertical: 8.h),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
-                          subtitle: Text(
-                            place.townName,
+                          child: Text(
+                            'Clear',
                             style: TextStyle(
+                              color: Constants().appColor,
                               fontSize: 14.sp,
-                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          trailing: isSelected
-                              ? Icon(
-                                  Icons.check_circle,
-                                  color: Constants().appColor,
-                                  size: 24.sp,
-                                )
-                              : null,
-                          onTap: () {
-                            _applyPlaceFilter(
-                                place.placeId.toString(), place.placeName);
-                            Navigator.pop(context);
-                          },
-                        );
-                      },
+                        ),
+                    ],
+                  ),
+                ),
+
+                // Search bar
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: Colors.grey[300]!,
+                      width: 1,
                     ),
+                  ),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: (value) {
+                      setModalState(() {
+                        if (value.isEmpty) {
+                          filteredPlaces = List.from(places);
+                        } else {
+                          filteredPlaces = places.where((place) {
+                            return place.placeName
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase()) ||
+                                place.townName
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase());
+                          }).toList();
+                        }
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Search locations...',
+                      hintStyle: TextStyle(
+                        color: Colors.grey[500],
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w400,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.search_rounded,
+                        color: Constants().appColor,
+                        size: 22.sp,
+                      ),
+                      suffixIcon: searchController.text.isNotEmpty
+                          ? IconButton(
+                              onPressed: () {
+                                searchController.clear();
+                                setModalState(() {
+                                  filteredPlaces = List.from(places);
+                                });
+                              },
+                              icon: Icon(
+                                Icons.close_rounded,
+                                color: Colors.grey[600],
+                                size: 20.sp,
+                              ),
+                            )
+                          : null,
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 16.h,
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Results info
+                if (searchController.text.isNotEmpty)
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                    child: Text(
+                      '${filteredPlaces.length} location${filteredPlaces.length != 1 ? 's' : ''} found',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+
+                // Places list
+                Expanded(
+                  child: filteredPlaces.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (places.isEmpty) ...[
+                                SizedBox(
+                                  width: 24.w,
+                                  height: 24.h,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Constants().appColor),
+                                    strokeWidth: 2.5,
+                                  ),
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'Loading locations...',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ] else ...[
+                                Icon(
+                                  Icons.search_off_rounded,
+                                  size: 48.sp,
+                                  color: Colors.grey[400],
+                                ),
+                                SizedBox(height: 16.h),
+                                Text(
+                                  'No locations found',
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                                SizedBox(height: 4.h),
+                                Text(
+                                  'Try a different search term',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.grey[500],
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.w, vertical: 12.h),
+                          itemCount: filteredPlaces.length,
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: 8.h),
+                          itemBuilder: (context, index) {
+                            final place = filteredPlaces[index];
+                            final isSelected = selectedPlaceIdFilter ==
+                                place.placeId.toString();
+
+                            return Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () {
+                                  _applyPlaceFilter(place.placeId.toString(),
+                                      place.placeName);
+                                  Navigator.pop(context);
+                                },
+                                borderRadius: BorderRadius.circular(16),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 16.w, vertical: 16.h),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? Constants().appColor.withOpacity(0.08)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: isSelected
+                                        ? Border.all(
+                                            color: Constants()
+                                                .appColor
+                                                .withOpacity(0.2),
+                                            width: 1,
+                                          )
+                                        : null,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 40.w,
+                                        height: 40.h,
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? Constants()
+                                                  .appColor
+                                                  .withOpacity(0.15)
+                                              : Colors.grey[100],
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.location_on_rounded,
+                                          color: Constants().appColor,
+                                          size: 20.sp,
+                                        ),
+                                      ),
+                                      SizedBox(width: 16.w),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              place.placeName,
+                                              style: TextStyle(
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w500,
+                                                color: isSelected
+                                                    ? Constants().appColor
+                                                    : Colors.grey[900],
+                                                letterSpacing: -0.2,
+                                              ),
+                                            ),
+                                            SizedBox(height: 2.h),
+                                            Text(
+                                              place.townName,
+                                              style: TextStyle(
+                                                fontSize: 14.sp,
+                                                color: Colors.grey[600],
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      if (isSelected)
+                                        Container(
+                                          width: 20.w,
+                                          height: 20.h,
+                                          decoration: BoxDecoration(
+                                            color: Constants().appColor,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.check_rounded,
+                                            color: Colors.white,
+                                            size: 14.sp,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
+  // void _showPlaceFilterBottomSheet() {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (context) => Container(
+  //       height: MediaQuery.of(context).size.height * 0.6,
+  //       decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  //       ),
+  //       child: Column(
+  //         children: [
+  //           // Handle bar
+  //           Container(
+  //             margin: EdgeInsets.only(top: 8.h),
+  //             width: 40.w,
+  //             height: 4.h,
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey[300],
+  //               borderRadius: BorderRadius.circular(2),
+  //             ),
+  //           ),
+  //           // Header
+  //           Padding(
+  //             padding: EdgeInsets.all(16.w),
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 Text(
+  //                   'Filter by Place',
+  //                   style: TextStyle(
+  //                     fontSize: 18.sp,
+  //                     fontWeight: FontWeight.bold,
+  //                     color: Color(0xFF2C2C2C),
+  //                   ),
+  //                 ),
+  //                 if (_isPlaceFilterActive)
+  //                   TextButton(
+  //                     onPressed: _clearPlaceFilter,
+  //                     child: Text(
+  //                       'Clear',
+  //                       style: TextStyle(
+  //                         color: Constants().appColor,
+  //                         fontWeight: FontWeight.w600,
+  //                       ),
+  //                     ),
+  //                   ),
+  //               ],
+  //             ),
+  //           ),
+  //           Divider(height: 1),
+  //           // Places list
+  //           Expanded(
+  //             child: places.isEmpty
+  //                 ? Center(
+  //                     child: CircularProgressIndicator(
+  //                       valueColor:
+  //                           AlwaysStoppedAnimation<Color>(Constants().appColor),
+  //                     ),
+  //                   )
+  //                 : ListView.builder(
+  //                     itemCount: places.length,
+  //                     itemBuilder: (context, index) {
+  //                       final place = places[index];
+  //                       final isSelected =
+  //                           selectedPlaceIdFilter == place.placeId.toString();
+
+  //                       return ListTile(
+  //                         title: Text(
+  //                           place.placeName,
+  //                           style: TextStyle(
+  //                             fontSize: 16.sp,
+  //                             fontWeight: isSelected
+  //                                 ? FontWeight.w600
+  //                                 : FontWeight.w400,
+  //                             color: isSelected
+  //                                 ? Constants().appColor
+  //                                 : Color(0xFF2C2C2C),
+  //                           ),
+  //                         ),
+  //                         subtitle: Text(
+  //                           place.townName,
+  //                           style: TextStyle(
+  //                             fontSize: 14.sp,
+  //                             color: Colors.grey[600],
+  //                           ),
+  //                         ),
+  //                         trailing: isSelected
+  //                             ? Icon(
+  //                                 Icons.check_circle,
+  //                                 color: Constants().appColor,
+  //                                 size: 24.sp,
+  //                               )
+  //                             : null,
+  //                         onTap: () {
+  //                           _applyPlaceFilter(
+  //                               place.placeId.toString(), place.placeName);
+  //                           Navigator.pop(context);
+  //                         },
+  //                       );
+  //                     },
+  //                   ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   // Apply place filter
   void _applyPlaceFilter(String placeId, String placeName) {

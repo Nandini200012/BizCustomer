@@ -96,7 +96,7 @@ class StoreScreenState extends State<StoreScreen>
   void _scrollListenerForFilterStore() {
     if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
-      if (!_isLoadingMore && _hasMoreData) {
+      if (!_isLoadingMore && _hasMoreData && selectedPlaceIdFilter == null) {
         _loadfilterMoreItems();
       }
     }
@@ -193,7 +193,10 @@ class StoreScreenState extends State<StoreScreen>
   }
 
   Future<http.Response> getStoreList(BuildContext context,
-      {bool reset = false, int pageNo = 1, int pageCount = 20}) async {
+      {bool reset = false,
+      int pageNo = 1,
+      int pageCount = 20,
+      String? placeid = null}) async {
     try {
       if (reset) {
         storesList.clear();
@@ -210,6 +213,7 @@ class StoreScreenState extends State<StoreScreen>
         'Token': Constants().token,
         'pageNo': pageNo.toString(),
         'pageSize': pageCount.toString(),
+        if (placeid != null) 'placeid': placeid.toString()
       };
 
       final response = await http.get(Uri.parse(Urls.stores), headers: headers);
@@ -1158,6 +1162,9 @@ class StoreScreenState extends State<StoreScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(
+                  height: 20.h,
+                ),
                 // Header section with back button
                 Padding(
                   padding:
@@ -1210,7 +1217,7 @@ class StoreScreenState extends State<StoreScreen>
 
                 // Search bar
                 Container(
-                  margin: EdgeInsets.all(20.w),
+                  margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
                     borderRadius: BorderRadius.circular(16),
@@ -1466,34 +1473,34 @@ class StoreScreenState extends State<StoreScreen>
       selectedPlaceIdFilter = placeId;
       selectedPlaceNameFilter = placeName;
       _isPlaceFilterActive = true;
-
+      getStoreList(context, placeid: placeId);
       // Filter stores by place - only on Store tab
-      if (_tabController.index == 1) {
-        print('Filtering stores for Store tab');
-        print('Master store list length: ${masterStoreList.length}');
+      // if (_tabController.index == 1) {
+      //   print('Filtering stores for Store tab');
+      //   print('Master store list length: ${masterStoreList.length}');
 
-        if (_searchQuery.isNotEmpty) {
-          // If there's a search query, filter the search results by place
-          print('Filtering search results by place');
-          filterVendorModel.data = filterVendorModel.data?.where((vendor) {
-            return vendor.vendorplaceName?.toString() == placeName;
-          }).toList();
-          print(
-              'Filtered search results length: ${filterVendorModel.data?.length ?? 0}');
-        } else {
-          // Filter master store list by place
-          print('Filtering master store list by place');
-          filteredStoresList = masterStoreList.where((store) {
-            bool matches = store.placeName == placeName ||
-                store.placeID.toString() == placeId;
-            print(
-                'Store: ${store.name}, Place: ${store.placeName}, PlaceID: ${store.placeID}, Matches: $matches');
-            return matches;
-          }).toList();
-          storesList = filteredStoresList;
-          print('Filtered stores length: ${filteredStoresList.length}');
-        }
-      }
+      //   if (_searchQuery.isNotEmpty) {
+      //     // If there's a search query, filter the search results by place
+      //     print('Filtering search results by place');
+      //     filterVendorModel.data = filterVendorModel.data?.where((vendor) {
+      //       return vendor.vendorplaceName?.toString() == placeName;
+      //     }).toList();
+      //     print(
+      //         'Filtered search results length: ${filterVendorModel.data?.length ?? 0}');
+      //   } else {
+      //     // Filter master store list by place
+      //     print('Filtering master store list by place');
+      //     filteredStoresList = masterStoreList.where((store) {
+      //       bool matches = store.placeName == placeName ||
+      //           store.placeID.toString() == placeId;
+      //       print(
+      //           'Store: ${store.name}, Place: ${store.placeName}, PlaceID: ${store.placeID}, Matches: $matches');
+      //       return matches;
+      //     }).toList();
+      //     // storesList = filteredStoresList;
+      //     print('Filtered stores length: ${filteredStoresList.length}');
+      //   }
+      // }
     });
     print('Place filter applied successfully');
   }
@@ -1504,7 +1511,7 @@ class StoreScreenState extends State<StoreScreen>
       selectedPlaceIdFilter = null;
       selectedPlaceNameFilter = null;
       _isPlaceFilterActive = false;
-
+      getStoreList(context);
       // Reset store list - only on Store tab
       if (_tabController.index == 1) {
         if (_searchQuery.isNotEmpty) {
